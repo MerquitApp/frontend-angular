@@ -1,1 +1,13 @@
-<p>list works!</p>
+<p-panel [header]="list.title" class="list-panel">
+  <div
+    cdkDropList
+    [cdkDropListData]="list.cards"
+    [id]="'list-' + list.id"
+    [cdkDropListConnectedTo]="connectedListIds"
+    (cdkDropListDropped)="drop($event)"
+    class="list-content">
+    <p-card *ngFor="let card of list.cards" cdkDrag class="p-card-task">
+      <app-card [card]="card"></app-card>
+    </p-card>
+  </div>
+</p-panel>
