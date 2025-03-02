@@ -1,1 +1,6 @@
-<p>board works!</p>
+<div class="board-container">
+  <app-list
+    *ngFor="let list of lists"
+    [list]="list"
+    [connectedLists]="lists"></app-list>
+</div>
