@@ -4,11 +4,12 @@ import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { ListComponent } from '../list/list.component';
 import { DataService } from '../../core/services/data.service';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CardModule, ListComponent, CommonModule],
+  imports: [CardModule, ListComponent, CommonModule, HeaderComponent],
   templateUrl: './board.component.html',
   styleUrl: './board.component.css'
 })
