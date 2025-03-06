@@ -12,11 +12,13 @@ import {
   transferArrayItem
 } from '@angular/cdk/drag-drop';
 
+
 @Component({
   selector: 'app-board',
   standalone: true,
   imports: [ListComponent, CommonModule, FormsModule, DragDropModule],
   providers: [MessageService],
+
   templateUrl: './board.component.html',
   styleUrl: './board.component.css'
 })

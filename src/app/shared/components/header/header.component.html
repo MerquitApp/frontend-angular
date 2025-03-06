@@ -1,1 +1,32 @@
-<p>header works!</p>
+<header
+  class="flex items-center justify-between p-4 bg-blue-600 text-white shadow-lg">
+  <div class="flex items-center gap-4">
+    <h1 class="text-2xl font-bold">Tablero</h1>
+    <button
+      (click)="toggleProjects()"
+      class="px-4 py-2 bg-white text-blue-600 rounded-lg shadow-md hover:bg-gray-100">
+      Proyectos
+    </button>
+
+    <div
+      *ngIf="showProjects"
+      class="absolute top-12 right-0 w-48 bg-blue-600 border-2 border-black shadow-lg rounded-lg">
+      <ul class="py-2">
+        <li class="px-4 py-2 hover:bg-blue-900 cursor-pointer">Proyecto 1</li>
+        <li class="px-4 py-2 hover:bg-blue-900 cursor-pointer">Proyecto 2</li>
+        <li class="px-4 py-2 hover:bg-blue-900 cursor-pointer">Proyecto 3</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <input
+      type="text"
+      placeholder="Buscar..."
+      class="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+    <img
+      [src]="userImage"
+      alt="Perfil"
+      class="w-10 h-10 rounded-full border-2 border-white" />
+  </div>
+</header>
