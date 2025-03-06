@@ -1,20 +1,37 @@
+@import 'primeicons/primeicons.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @font-face {
-  font-family: "Inter";
-  src: url("/fonts/Inter-VariableFont.ttf");
+  font-family: 'Inter';
+  src: url('/fonts/Inter-VariableFont.ttf');
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Inter";
-  src: url("/fonts/Inter-Italic-VariableFont.ttf");
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Italic-VariableFont.ttf');
   font-style: italic;
+}
+
+/* Color de fondo del tablero */
+.board-background {
+  background-color: white; /* Azul tipo Trello */
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: auto; /* Para que las listas puedan hacer scroll horizontal si hay muchas */
+}
+
+/* Ajustes para la sección de listas dentro del tablero */
+.board-lists {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
 }
 
 html,
 body {
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
