@@ -1,25 +1,66 @@
 import { Component, OnInit } from '@angular/core';
 import { List } from '../../shared/models/list.model';
-import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 import { ListComponent } from '../list/list.component';
 import { DataService } from '../../core/services/data.service';
-import { HeaderComponent } from '../../shared/components/header/header.component';
+import { FormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+  transferArrayItem
+} from '@angular/cdk/drag-drop';
+
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [CardModule, ListComponent, CommonModule, HeaderComponent],
+  imports: [ListComponent, CommonModule, FormsModule, DragDropModule],
+  providers: [MessageService],
+
   templateUrl: './board.component.html',
   styleUrl: './board.component.css'
 })
 export class BoardComponent implements OnInit {
   lists: List[] = []; //inicializa la lista de tareas
+  newListTitle: string = ''; //inicializa el titulo de la nueva tarea
 
   constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
-    this.lists = this.dataService.getLists(); // Obtiene las listas de tareas
-    console.log('Lists:', this.lists);
+    // Nos suscribimos al observable para obtener las listas actualizadas
+    this.dataService.lists$.subscribe((lists) => {
+      this.lists = lists;
+    });
+  }
+
+  // Crea una nueva lista usando el DataService
+  createList(): void {
+    if (this.newListTitle.trim()) {
+      this.dataService.addList(this.newListTitle);
+      this.newListTitle = '';
+    }
+  }
+  // Método que se llama al soltar una lista
+  dropList(event: CdkDragDrop<List[]>) {
+    if (event.previousContainer === event.container) {
+      // Reordena las listas en el mismo contenedor
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      // Mueve la lista de un contenedor a otro
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+    // Actualiza el estado de las listas
+    this.dataService.setLists(this.lists); // Actualiza el estado de las listas
   }
 }
