@@ -1,26 +1,46 @@
+<app-header></app-header>
 <div
-  class="bg-white min-h-screen p-5 overflow-x-auto flex space-x-4"
+  class="min-h-screen p-5 overflow-x-auto flex space-x-4"
   cdkDropList
   [cdkDropListData]="lists"
   (cdkDropListDropped)="dropList($event)"
   [cdkDropListOrientation]="'horizontal'">
   <!-- src/app/board/board.component.html -->
-  <!-- Sección para crear nueva lista -->
-  <div class="w-64 bg-zinc-900 p-3 rounded">
-    <h3 class="font-bold mb-2">Crear Lista</h3>
-    <input
-      type="text"
-      [(ngModel)]="newListTitle"
-      placeholder="Nueva lista"
-      class="w-full mb-2 border border-gray-300 rounded p-1 focus:outline-none" />
-    <button
-      (click)="createList()"
-      class="bg-zinc-700 text-white px-3 py-1 rounded hover:bg-zinc-600 w-full">
-      Agregar
-    </button>
-  </div>
+
   <!-- Cada lista se vuelve draggable con cdkDrag -->
   <div *ngFor="let list of lists; let i = index" cdkDrag class="min-w-[250px]">
     <app-list [list]="list" [connectedLists]="lists"></app-list>
+  </div>
+
+  <!-- Botón para mostrar el input y el botón de crear lista -->
+  <ng-container *ngIf="!showCreateList">
+    <button
+      (click)="toggleCreateList()"
+      class="bg-zinc-900 text-white min-w-60 h-12 px-3 py-1 rounded hover:bg-zinc-800">
+      Lista nueva
+    </button>
+  </ng-container>
+
+  <!-- Sección para crear nueva lista -->
+  <div
+    *ngIf="showCreateList"
+    class="min-w-60 h-24 bg-zinc-900 p-3 rounded flex flex-col space-y-2">
+    <div class="flex items-center space-x-2">
+      <input
+        type="text"
+        [(ngModel)]="newListTitle"
+        placeholder="Crear lista"
+        class="w-full border border-gray-300 rounded p-1 focus:outline-none" />
+      <button
+        (click)="createList()"
+        class="bg-zinc-700 text-white px-3 py-1 rounded hover:bg-zinc-600 w-10">
+        +
+      </button>
+    </div>
+    <button
+      (click)="toggleCreateList()"
+      class="bg-zinc-700 text-white px-3 py-1 rounded hover:bg-zinc-600 w-full">
+      Cancelar
+    </button>
   </div>
 </div>
