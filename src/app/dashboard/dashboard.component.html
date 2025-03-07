@@ -1,3 +1,4 @@
+<app-header></app-header>
 <div class="p-4 max-w-screen-lg mx-auto">
   <h1 class="text-2xl font-bold mb-6 text-zinc-200">Boards</h1>
 
@@ -38,13 +39,6 @@
             (click)="$event.stopPropagation()"></button>
         </div>
       </ng-template>
-    </p-card>
-
-    <!-- Placeholder para crear un nuevo board -->
-    <p-card
-      class="border-dashed border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
-      (click)="focusNewBoardInput()">
-      <span class="text-gray-600">Crear nuevo board</span>
     </p-card>
   </div>
 </div>

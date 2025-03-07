@@ -9,6 +9,7 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
+import { HeaderComponent } from '../shared/components/header/header.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,8 @@ import { MenuItem } from 'primeng/api';
     ButtonModule,
     CardModule,
     InputTextModule,
-    MenuModule
+    MenuModule,
+    HeaderComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
