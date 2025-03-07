@@ -5,10 +5,15 @@ import { AuthGuard } from './auth/auth.guard';
 import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'board', component: BoardComponent, canActivate: [AuthGuard] },
-  { path: '', redirectTo: '/board', pathMatch: 'full' },
-  { path: '**', redirectTo: '/board' }
+  {
+    path: 'dashboard',
+    loadChildren: () =>
+      import('./dashboard/dashboard.module').then((m) => m.DashboardModule)
+  },
+  { path: 'board/:id', component: BoardComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
 ];
 
 @NgModule({
