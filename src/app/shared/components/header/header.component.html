@@ -1,6 +1,6 @@
 <header
   class="flex items-center justify-between p-4 bg-zinc-900 text-white shadow-lg">
-  <a routerLink="/board">
+  <a routerLink="/dashboard">
     <div class="flex items-center gap-4">
       <h1 class="text-2xl font-bold">Devllo</h1>
     </div>
@@ -11,7 +11,7 @@
       [dropdown]="true"
       [suggestions]="items"
       placeholder="Buscar Proyectos"
-      (completeMethod)="search($event)" />
+      (completeMethod)="search()" />
     <p-button label="Perfil" icon="pi pi-user" routerLink="/profile" />
   </div>
 </header>
