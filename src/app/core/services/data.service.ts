@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { List, Card } from '../../shared/models/list.model';
+import { Board } from '../../shared/models/board.model';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,18 @@ export class DataService {
     { id: 2, title: 'En progreso', cards: [] },
     { id: 3, title: 'Terminadas', cards: [] }
   ]);
+
+  // Estado inicial con algunos boards de ejemplo
+  private boardsSubject = new BehaviorSubject<Board[]>([]);
+
+  public boards$ = this.boardsSubject.asObservable();
+
+  constructor(private router: Router) {
+    const initialBoards: Board[] = [
+      { id: 1, name: 'Tablero de Ejemplo', lists: [] }
+    ];
+    this.boardsSubject.next(initialBoards);
+  }
 
   // Observable para que los componentes se suscriban a los cambios
   lists$ = this.listsSubject.asObservable();
@@ -62,17 +76,6 @@ export class DataService {
     this.updateLists(lists);
   }
 
-  // Agrega una tarjeta a una lista
-  addCard(listId: number, card: Card): void {
-    const lists = this.getLists();
-    const list = lists.find((l) => l.id === listId);
-    if (list) {
-      card.id = this.generateId();
-      list.cards.push(card);
-      this.updateList(list);
-    }
-  }
-
   // Actualiza una tarjeta en una lista
   updateCard(listId: number, updatedCard: Card): void {
     const lists = this.getLists();
@@ -93,5 +96,61 @@ export class DataService {
       list.cards = list.cards.filter((card) => card.id !== cardId);
       this.updateList(list);
     }
+  }
+
+  /**
+   * Devuelve el array actual de boards
+   */
+  getBoards(): Board[] {
+    return this.boardsSubject.getValue();
+  }
+
+  /**
+   * Crea un nuevo board con el nombre especificado
+   */
+  createBoard(boardName: string): void {
+    const boards = this.getBoards();
+    const newBoard: Board = {
+      id: Date.now(), // Genera un ID único
+      name: boardName,
+      lists: []
+    };
+    boards.push(newBoard);
+    this.boardsSubject.next(boards);
+  }
+
+  /**
+   * Elimina un board por su ID
+   */
+  deleteBoard(boardId: number): void {
+    const boards = this.getBoards();
+    const updatedBoards = boards.filter((board) => board.id !== boardId);
+    this.boardsSubject.next(updatedBoards);
+  }
+
+  addCard(listId: number, card: Card): void {
+    const lists = this.getLists();
+    const list = lists.find((l) => l.id === listId);
+    if (list) {
+      card.id = this.generateId();
+      list.cards.push(card);
+      this.updateList(list);
+    }
+  }
+
+  addBoard(boardName: string): void {
+    const boards = this.getBoards();
+    const newBoard: Board = {
+      id: this.generateId(),
+      name: boardName,
+      lists: []
+    };
+    boards.push(newBoard);
+    this.updateBoards(boards);
+  }
+
+  // Actualiza el estado de los boards
+  private updateBoards(boards: Board[]): void {
+    this.boardsSubject.next(boards);
   }
 }
