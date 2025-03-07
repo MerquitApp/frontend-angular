@@ -3,11 +3,13 @@ import { LoginComponent } from './auth/login/login.component';
 import { BoardComponent } from './board/board/board.component';
 import { AuthGuard } from './auth/auth.guard';
 import { NgModule } from '@angular/core';
+import { ProfileComponent } from './profile/profile.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'board', component: BoardComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/board', pathMatch: 'full' },
+  { path: 'profile', component: ProfileComponent },
   { path: '**', redirectTo: '/board' }
 ];
 

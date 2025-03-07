@@ -11,12 +11,18 @@ import {
   moveItemInArray,
   transferArrayItem
 } from '@angular/cdk/drag-drop';
-
+import { HeaderComponent } from '../../shared/components/header/header.component';
 
 @Component({
   selector: 'app-board',
   standalone: true,
-  imports: [ListComponent, CommonModule, FormsModule, DragDropModule],
+  imports: [
+    ListComponent,
+    CommonModule,
+    FormsModule,
+    DragDropModule,
+    HeaderComponent
+  ],
   providers: [MessageService],
 
   templateUrl: './board.component.html',
@@ -25,6 +31,7 @@ import {
 export class BoardComponent implements OnInit {
   lists: List[] = []; //inicializa la lista de tareas
   newListTitle: string = ''; //inicializa el titulo de la nueva tarea
+  showCreateList = false;
 
   constructor(private dataService: DataService) {}
 
@@ -62,5 +69,9 @@ export class BoardComponent implements OnInit {
     }
     // Actualiza el estado de las listas
     this.dataService.setLists(this.lists); // Actualiza el estado de las listas
+  }
+
+  toggleCreateList() {
+    this.showCreateList = !this.showCreateList;
   }
 }

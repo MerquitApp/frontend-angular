@@ -1,17 +1,40 @@
-import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
+import { RouterLink, RouterModule } from '@angular/router';
+import { SplitButtonModule } from 'primeng/splitbutton';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  imports: [NgIf],
+  standalone: true,
+  imports: [
+    RouterModule,
+    ButtonModule,
+    AutoCompleteModule,
+    FormsModule,
+    RouterLink,
+    SplitButtonModule
+  ],
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  userImage: string = 'https://github.com/github.png';
-  showProjects: boolean = false;
+  value: string;
+  items: string[];
 
-  toggleProjects() {
-    this.showProjects = !this.showProjects;
+  constructor() {
+    this.value = '';
+    this.items = [];
+  }
+
+  search() {
+    this.items = [
+      'Proyecto 1',
+      'Proyecto 2',
+      'Proyecto 3',
+      'Proyecto 4',
+      'Proyecto 5'
+    ];
   }
 }
