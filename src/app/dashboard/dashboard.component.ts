@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Board } from '../shared/models/board.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -22,7 +21,6 @@ import { DialogModule } from 'primeng/dialog';
     CardModule,
     InputTextModule,
     HeaderComponent,
-    RouterLink,
     DialogModule
   ],
   templateUrl: './dashboard.component.html'

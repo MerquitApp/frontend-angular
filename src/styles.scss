@@ -1,5 +1,3 @@
-@import 'primeicons/primeicons.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,7 +16,7 @@
 
 /* Color de fondo del tablero */
 .board-background {
-  background-color: white; /* Azul tipo Trello */
+  background-color: white;
   min-height: 100vh;
   padding: 20px;
   overflow-x: auto; /* Para que las listas puedan hacer scroll horizontal si hay muchas */

@@ -54,7 +54,7 @@ export class ListComponent {
   ) {}
 
   // Cuando se hace drag-and-drop de una tarjeta
-  drop(event: CdkDragDrop<unknown[]>) {
+  drop(event: CdkDragDrop<any[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
