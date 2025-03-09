@@ -1,60 +1,70 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from '../core/services/data.service';
 import { Board } from '../shared/models/board.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { MenuModule } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
 import { HeaderComponent } from '../shared/components/header/header.component';
+import { BoardService } from '../board/board.service';
+import { DasboardBoardCardComponent } from '../dasboard-board-card/dasboard-board-card.component';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
   imports: [
+    DasboardBoardCardComponent,
     FormsModule,
     CommonModule,
     ButtonModule,
     CardModule,
     InputTextModule,
-    MenuModule,
-    HeaderComponent
+    HeaderComponent,
+    RouterLink,
+    DialogModule
   ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
   boards: Board[] = [];
   newBoardName: string = '';
-  menuItems: MenuItem[] = [];
+  displayJoinDialog: boolean = false;
+  joinCode: string = '';
 
-  constructor(
-    private dataService: DataService,
-    private router: Router
-  ) {}
+  constructor(private boardService: BoardService) {}
 
   ngOnInit(): void {
-    // Suscribirse para actualizar boards cuando cambien
-    this.dataService.boards$.subscribe((boards: Board[]) => {
+    this.boardService.loadBoards();
+
+    this.boardService.boards$.subscribe((boards: Board[]) => {
       this.boards = boards;
     });
   }
 
+  joinBoard(): void {
+    this.boardService.joinBoard(this.joinCode);
+    this.displayJoinDialog = false;
+  }
+
+  cancelJoin(): void {
+    this.displayJoinDialog = false;
+  }
+
+  openJoinDialog(): void {
+    this.displayJoinDialog = true;
+  }
+
   createBoard(): void {
-    if (this.newBoardName.trim()) {
-      this.dataService.addBoard(this.newBoardName);
-      this.newBoardName = '';
+    if (!this.newBoardName.trim()) {
+      return;
     }
+
+    this.boardService.createBoard(this.newBoardName);
+    this.newBoardName = '';
   }
-  goToBoard(boardId: number): void {
-    this.router.navigate(['/board', boardId]);
-    console.log(`Navigating to board with id: ${boardId}`);
-  }
-  deleteBoard(boardId: number): void {
-    this.dataService.deleteBoard(boardId);
-  }
+
   focusNewBoardInput() {
     this.newBoardName = '';
   }

@@ -3,7 +3,7 @@
   <p-confirmdialog></p-confirmdialog>
   <!-- Encabezado de la lista -->
   <div class="flex justify-between items-center">
-    <h2 class="font-bold text-lg text-white">{{ list.title }}</h2>
+    <h2 class="font-bold text-lg text-white">{{ list.name }}</h2>
     <div class="flex space-x-2">
       <button (click)="editListTitle()" class="text-gray-300 hover:text-white">
         <i class="pi pi-pencil"></i>
@@ -47,18 +47,15 @@
   <!-- Contenedor cdkDropList para arrastrar y soltar tarjetas -->
   <div
     cdkDropList
-    [cdkDropListData]="list.cards"
+    [cdkDropListData]="list.tasks"
     [id]="'list-' + list.id"
     [cdkDropListConnectedTo]="connectedListIds"
     (cdkDropListDropped)="drop($event)"
     class="flex flex-col space-y-2 min-h-[50px]">
     <!-- Si hay tarjetas, se muestran; si no, un placeholder para poder soltar -->
-    <ng-container *ngIf="list.cards && list.cards.length; else emptyList">
-      <div *ngFor="let card of list.cards" cdkDrag>
-        <app-card
-          [card]="card"
-          (onEdit)="editCard($event)"
-          (onDelete)="deleteCard($event)"></app-card>
+    <ng-container *ngIf="list.tasks && list.tasks.length; else emptyList">
+      <div *ngFor="let card of list.tasks" cdkDrag>
+        <app-card [card]="card"></app-card>
       </div>
     </ng-container>
     <ng-template #emptyList>

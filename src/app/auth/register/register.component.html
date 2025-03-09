@@ -1,5 +1,5 @@
 <div class="flex justify-center items-center h-screen">
-  <p-card header="Iniciar sesión" styleClass="p-card-custom">
+  <p-card header="Registro" styleClass="p-card-custom">
     <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
       <div class="flex flex-col gap-1">
         <label for="username">Usuario</label>
@@ -28,15 +28,12 @@
       <button
         pButton
         type="submit"
-        label="Iniciar sesión"
+        label="Registrar"
         class="p-button-primary"></button>
     </form>
-    <a [href]="githubLoginUrl" pButton class="mt-4 w-full" severity="secondary"
-      >Iniciar sesión con GitHub</a
-    >
     <div class="flex flex-col justify-center items-center gap-2 mt-4">
-      <a routerLink="/register" class="text-center text-sm underline"
-        >¿No tienes cuenta? Regístrate</a
+      <a routerLink="/login" class="text-center text-sm underline"
+        >¿Ya tienes cuenta? Inicia sesión</a
       >
     </div>
   </p-card>

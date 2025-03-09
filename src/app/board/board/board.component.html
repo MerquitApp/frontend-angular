@@ -1,15 +1,79 @@
 <app-header></app-header>
+<p-dialog
+  header="Tarea"
+  [(visible)]="isEditingTask"
+  [modal]="true"
+  [style]="{ width: '600px' }"
+  [closable]="false">
+  <div class="mb-4">
+    <input
+      type="text"
+      pInputText
+      class="text-lg font-bold"
+      [(ngModel)]="updatingTask.title"
+      [placeholder]="updatingTask.title" />
+  </div>
+
+  <div class="mb-4">
+    <label class="block font-bold mb-1">Descripción</label>
+    <p-editor
+      [(ngModel)]="updatingTask.description"
+      [style]="{ height: '200px' }"></p-editor>
+  </div>
+
+  <div class="flex justify-end space-x-2">
+    <button
+      pButton
+      label="Guardar"
+      icon="pi pi-check"
+      class="p-button-success"
+      (click)="saveCard()"></button>
+    <button
+      pButton
+      label="Eliminar"
+      icon="pi pi-trash"
+      class="p-button-danger"
+      (click)="deleteCard()"></button>
+    <button
+      pButton
+      label="Cerrar"
+      icon="pi pi-times"
+      class="p-button-secondary"
+      (click)="closeCardDetails()"></button>
+  </div>
+</p-dialog>
+
+<p-drawer [(visible)]="isViewingMembers" header="Miembros" position="right">
+  <ul class="flex flex-col gap-8">
+    @for (member of board.project_users; track board.project_users) {
+      <li class="flex flex-nowrap gap-8 items-center">
+        <p-avatar [label]="member.user.username | firstLetter" size="xlarge" />
+        <div class="text-center flex flex-col items-center space-y-2">
+          <div class="flex items-center gap-4">
+            <h2 class="text-2xl font-semibold">{{ member.user.username }}</h2>
+            <p-badge [value]="member.role | titlecase" />
+          </div>
+        </div>
+      </li>
+    }
+  </ul>
+</p-drawer>
+
 <div
-  class="min-h-screen p-5 overflow-x-auto flex space-x-4"
+  class="max-w-6xl mx-auto p-5 overflow-x-auto flex space-x-4"
   cdkDropList
-  [cdkDropListData]="lists"
+  [cdkDropListData]="board.project_columns"
   (cdkDropListDropped)="dropList($event)"
   [cdkDropListOrientation]="'horizontal'">
-  <!-- src/app/board/board.component.html -->
-
   <!-- Cada lista se vuelve draggable con cdkDrag -->
-  <div *ngFor="let list of lists; let i = index" cdkDrag class="min-w-[250px]">
-    <app-list [list]="list" [connectedLists]="lists"></app-list>
+  <div
+    *ngFor="let column of board.project_columns; let i = index"
+    cdkDrag
+    class="min-w-[250px]">
+    <app-list
+      [list]="column"
+      [connectedLists]="board.project_columns"
+      [boardId]="board.id"></app-list>
   </div>
 
   <!-- Botón para mostrar el input y el botón de crear lista -->
@@ -18,6 +82,11 @@
       (click)="toggleCreateList()"
       class="bg-zinc-900 text-white min-w-60 h-12 px-3 py-1 rounded hover:bg-zinc-800">
       Lista nueva
+    </button>
+    <button
+      (click)="toggleViewMembers()"
+      class="bg-zinc-900 text-white min-w-14 h-12 rounded hover:bg-zinc-800">
+      <i class="pi pi-users"></i>
     </button>
   </ng-container>
 

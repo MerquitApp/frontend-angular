@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { BoardService } from '../../../board/board.service';
+import { Board } from '../../models/board.model';
 
 @Component({
   selector: 'app-header',
@@ -19,22 +21,37 @@ import { SplitButtonModule } from 'primeng/splitbutton';
   ],
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   value: string;
-  items: string[];
+  boards: Board[] = [];
+  items: string[] = [];
 
-  constructor() {
+  constructor(
+    private boardsService: BoardService,
+    private router: Router
+  ) {
     this.value = '';
-    this.items = [];
+  }
+
+  ngOnInit(): void {
+    this.boardsService.boards$.subscribe((b) => {
+      this.boards = b;
+    });
+  }
+
+  select() {
+    const boardId = this.boards.find((b) => b.name === this.value)?.id;
+
+    if (!boardId) {
+      return;
+    }
+
+    this.router.navigate(['/board', boardId]);
   }
 
   search() {
-    this.items = [
-      'Proyecto 1',
-      'Proyecto 2',
-      'Proyecto 3',
-      'Proyecto 4',
-      'Proyecto 5'
-    ];
+    this.items = this.boards
+      .filter((item) => item.name.includes(this.value))
+      .map((item) => item.name);
   }
 }

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { List } from '../../shared/models/list.model';
 import { CommonModule } from '@angular/common';
 import { ListComponent } from '../list/list.component';
-import { DataService } from '../../core/services/data.service';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import {
@@ -12,6 +10,17 @@ import {
   transferArrayItem
 } from '@angular/cdk/drag-drop';
 import { HeaderComponent } from '../../shared/components/header/header.component';
+import { Board, Card, ProjectColumn } from '../../shared/models/board.model';
+import { BoardService } from '../board.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
+import { EditorModule } from 'primeng/editor';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { DrawerModule } from 'primeng/drawer';
+import { AvatarModule } from 'primeng/avatar';
+import { BadgeModule } from 'primeng/badge';
+import { FirstLetterPipe } from '../../pipes/firtsletter.pipe';
 
 @Component({
   selector: 'app-board',
@@ -21,36 +30,54 @@ import { HeaderComponent } from '../../shared/components/header/header.component
     CommonModule,
     FormsModule,
     DragDropModule,
-    HeaderComponent
+    HeaderComponent,
+    DialogModule,
+    EditorModule,
+    ButtonModule,
+    InputTextModule,
+    DrawerModule,
+    AvatarModule,
+    FirstLetterPipe,
+    BadgeModule
   ],
   providers: [MessageService],
-
-  templateUrl: './board.component.html',
-  styleUrl: './board.component.css'
+  templateUrl: './board.component.html'
 })
 export class BoardComponent implements OnInit {
-  lists: List[] = []; //inicializa la lista de tareas
+  board: Board = {
+    id: 0,
+    name: '',
+    project_columns: [],
+    project_users: []
+  };
   newListTitle: string = ''; //inicializa el titulo de la nueva tarea
   showCreateList = false;
+  updatingTask: Card = {
+    id: 0,
+    title: '',
+    description: ''
+  };
+  isEditingTask: boolean = false;
+  isViewingMembers: boolean = false;
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private boardService: BoardService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {
-    // Nos suscribimos al observable para obtener las listas actualizadas
-    this.dataService.lists$.subscribe((lists) => {
-      this.lists = lists;
-    });
-  }
-
-  // Crea una nueva lista usando el DataService
   createList(): void {
-    if (this.newListTitle.trim()) {
-      this.dataService.addList(this.newListTitle);
-      this.newListTitle = '';
-    }
+    if (!this.newListTitle.trim()) return;
+    this.boardService.createBoardColumn(this.board!.id, this.newListTitle);
+    this.newListTitle = '';
   }
+
+  toggleViewMembers() {
+    this.isViewingMembers = !this.isViewingMembers;
+  }
+
   // Método que se llama al soltar una lista
-  dropList(event: CdkDragDrop<List[]>) {
+  dropList(event: CdkDragDrop<ProjectColumn[]>) {
     if (event.previousContainer === event.container) {
       // Reordena las listas en el mismo contenedor
       moveItemInArray(
@@ -67,8 +94,43 @@ export class BoardComponent implements OnInit {
         event.currentIndex
       );
     }
-    // Actualiza el estado de las listas
-    this.dataService.setLists(this.lists); // Actualiza el estado de las listas
+  }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const boardId = +params.get('id')!;
+      const board = this.boardService.getBoardById(boardId);
+
+      if (!board) {
+        this.router.navigate(['/']);
+        return;
+      }
+
+      this.board = board;
+    });
+    this.boardService.updatingTask$.subscribe((card) => {
+      this.isEditingTask = Boolean(card);
+
+      if (card) {
+        this.updatingTask = card;
+      }
+    });
+  }
+
+  saveCard() {
+    this.boardService.updateBoardTask(
+      this.board!.id,
+      this.updatingTask.id,
+      this.updatingTask
+    );
+  }
+
+  deleteCard() {
+    this.boardService.removeBoardTask(this.board!.id, this.updatingTask.id);
+  }
+
+  closeCardDetails() {
+    this.boardService.updatingTask$.next(null);
   }
 
   toggleCreateList() {

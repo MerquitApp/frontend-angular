@@ -1,39 +1,38 @@
 <app-header></app-header>
 
-<div class="flex flex-col items-center p-6">
-  <div class="w-36 h-36 rounded-full overflow-hidden">
-    <img
-      [src]="profilePictureUrl"
-      alt="Profile Picture"
-      class="w-full h-full object-cover" />
-  </div>
-  <div class="text-center mt-4 flex flex-col items-center space-y-2">
-    <div class="flex flex-row items-center space-x-2">
-      <h2 class="text-2xl font-semibold" *ngIf="!isEditingName">
-        {{ userName }}
-      </h2>
-      <input
-        *ngIf="isEditingName"
-        [(ngModel)]="userName"
-        class="w-full border border-gray-300 rounded p-1 focus:outline-none" />
-      <button
-        class="px-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded"
-        (click)="toggleEditName()">
-        <i class="pi pi-user-edit"></i>
-      </button>
+<div class="bg-zinc-800 mt-24 p-6 rounded-lg max-w-xs mx-auto w-[90%]">
+  <div class="flex flex-col items-center p-6">
+    <p-avatar
+      [label]="userName | firstLetter"
+      styleClass="mr-2"
+      size="xlarge" />
+    <div class="text-center mt-4 flex flex-col items-center space-y-2">
+      <div class="flex flex-row items-center space-x-2">
+        <h2 class="text-2xl font-semibold" *ngIf="!isEditingName">
+          {{ userName }}
+        </h2>
+        <input
+          *ngIf="isEditingName"
+          [(ngModel)]="userName"
+          class="w-full border border-gray-300 rounded p-1 focus:outline-none" />
+        <button
+          class="px-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded"
+          (click)="toggleEditName()">
+          <i class="pi pi-user-edit"></i>
+        </button>
+      </div>
     </div>
-    <div class="flex flex-row items-center space-x-2">
-      <p class="text-gray-500 mt-2" *ngIf="!isEditingEmail">{{ userEmail }}</p>
-      <input
-        *ngIf="isEditingEmail"
-        [(ngModel)]="userEmail"
-        type="email"
-        class="w-full border border-gray-300 rounded p-1 focus:outline-none" />
-      <button
-        class="px-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded"
-        (click)="toggleEditEmail()">
-        <i class="pi pi-user-edit"></i>
-      </button>
-    </div>
+    <p-button
+      severity="warn"
+      label="Cerrar sesión"
+      icon="pi pi-sign-out"
+      (click)="logout()"
+      class="mt-4"></p-button>
+    <p-button
+      severity="danger"
+      label="Eliminar cuenta"
+      icon="pi pi-trash"
+      (click)="deleteAccount()"
+      class="mt-4"></p-button>
   </div>
 </div>

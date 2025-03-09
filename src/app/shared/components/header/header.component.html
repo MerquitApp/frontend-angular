@@ -1,17 +1,19 @@
-<header
-  class="flex items-center justify-between p-4 bg-zinc-900 text-white shadow-lg">
-  <a routerLink="/dashboard">
+<header class="bg-zinc-900 text-white shadow-lg">
+  <div class="max-w-6xl w-[90%] mx-auto flex items-center justify-between p-4">
+    <a routerLink="/">
+      <div class="flex items-center gap-4">
+        <h1 class="text-2xl font-bold">Devllo</h1>
+      </div>
+    </a>
     <div class="flex items-center gap-4">
-      <h1 class="text-2xl font-bold">Devllo</h1>
+      <p-autocomplete
+        [(ngModel)]="value"
+        [dropdown]="true"
+        [suggestions]="items"
+        placeholder="Buscar Proyectos"
+        (completeMethod)="search()"
+        (onSelect)="select()"></p-autocomplete>
+      <p-button label="Perfil" icon="pi pi-user" routerLink="/profile" />
     </div>
-  </a>
-  <div class="flex items-center gap-4">
-    <p-autocomplete
-      [(ngModel)]="value"
-      [dropdown]="true"
-      [suggestions]="items"
-      placeholder="Buscar Proyectos"
-      (completeMethod)="search()" />
-    <p-button label="Perfil" icon="pi pi-user" routerLink="/profile" />
   </div>
 </header>

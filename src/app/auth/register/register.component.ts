@@ -4,21 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { RouterLink } from '@angular/router';
-import { environment } from '../../../environments/environment';
 
 @Component({
   standalone: true,
   imports: [FormsModule, CardModule, ButtonModule, RouterLink],
-  templateUrl: './login.component.html'
+  templateUrl: './register.component.html'
 })
-export class LoginComponent {
+export class RegisterComponent {
   username: string = '';
   password: string = '';
-  githubLoginUrl = `${environment.apiUrl}/auth/login/github`;
 
   constructor(private authService: AuthService) {}
 
   onSubmit(): void {
-    this.authService.login(this.username, this.password);
+    this.authService.register(this.username, this.password);
   }
 }

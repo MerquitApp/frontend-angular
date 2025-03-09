@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Card, List } from '../../shared/models/list.model';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -11,13 +10,14 @@ import { CardModule } from 'primeng/card';
 import { CardComponent } from '../card/card.component';
 import { PanelModule } from 'primeng/panel';
 import { FormsModule } from '@angular/forms';
-import { DataService } from '../../core/services/data.service';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { Card, ProjectColumn } from '../../shared/models/board.model';
+import { BoardService } from '../board.service';
 
 @Component({
   selector: 'app-list',
@@ -36,11 +36,11 @@ import { InputTextModule } from 'primeng/inputtext';
     InputTextModule
   ],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.css',
   providers: [ConfirmationService, MessageService]
 })
 export class ListComponent {
-  @Input() list!: List;
+  @Input() boardId!: number;
+  @Input() list!: ProjectColumn;
   @Input() connectedLists!: { id: number }[];
 
   // Control de diálogo para editar el título de la lista
@@ -48,13 +48,13 @@ export class ListComponent {
   editedListTitle: string = '';
 
   constructor(
-    private dataService: DataService,
+    private boardService: BoardService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
 
   // Cuando se hace drag-and-drop de una tarjeta
-  drop(event: CdkDragDrop<Card[]>) {
+  drop(event: CdkDragDrop<unknown[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -74,24 +74,22 @@ export class ListComponent {
   // Al crear tarjeta, solo usamos el título
   createCard(title: string) {
     if (title.trim()) {
-      const newCard: Card = {
-        id: 0,
-        title,
-        description: '' // Se editará en la ventana emergente
-      };
-      this.dataService.addCard(this.list.id, newCard);
+      this.boardService.addBoardTask(this.boardId, this.list.id, title);
     }
   }
 
   // Se llama cuando el componente Card emite onEdit
   editCard(updatedCard: Card) {
-    // Actualizamos el card en la lista (DataService)
-    this.dataService.updateCard(this.list.id, updatedCard);
+    this.boardService.updateBoardTask(
+      this.boardId,
+      updatedCard.id,
+      updatedCard
+    );
   }
 
   // Se llama cuando el componente Card emite onDelete
   deleteCard(card: Card) {
-    this.dataService.deleteCard(this.list.id, card.id);
+    this.boardService.removeBoardTask(this.boardId, card.id);
   }
 
   // Creamos un getter que transforme { id: number } en el string "list-<id>"
@@ -101,17 +99,19 @@ export class ListComponent {
 
   // Abre el diálogo para editar el título de la lista
   editListTitle() {
-    this.editedListTitle = this.list.title;
+    this.editedListTitle = this.list.name;
     this.displayEditDialog = true;
   }
 
   // Guarda el nuevo título y cierra el diálogo
   saveListTitle() {
-    if (this.editedListTitle.trim()) {
-      this.list.title = this.editedListTitle;
-      this.dataService.updateList(this.list);
-      this.displayEditDialog = false;
-    }
+    if (!this.editedListTitle.trim()) return;
+    this.boardService.updateProjectColumn(this.boardId, {
+      id: this.list.id,
+      name: this.editedListTitle
+    });
+    this.displayEditDialog = false;
+    this.editedListTitle = '';
   }
 
   // Cancela la edición y cierra el diálogo
@@ -119,15 +119,8 @@ export class ListComponent {
     this.displayEditDialog = false;
   }
 
-  deleteList() {
-    if (confirm('¿Estás seguro de eliminar esta lista?')) {
-      this.dataService.deleteList(this.list.id);
-    }
-  }
-
   // Método que se llamará si se confirma la eliminación
   performDeleteList() {
-    this.dataService.deleteList(this.list.id);
     this.messageService.add({
       severity: 'info',
       summary: 'Eliminada',
@@ -152,7 +145,7 @@ export class ListComponent {
         severity: 'danger'
       },
       accept: () => {
-        this.performDeleteList();
+        this.boardService.removeBoardColumn(this.boardId, this.list.id);
       },
       reject: () => {
         this.messageService.add({

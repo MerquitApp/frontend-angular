@@ -1,34 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HeaderComponent } from '../shared/components/header/header.component';
 import 'primeicons/primeicons.css';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../auth/auth.service';
+import { AvatarModule } from 'primeng/avatar';
+import { FirstLetterPipe } from '../pipes/firtsletter.pipe';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-profile',
-  imports: [HeaderComponent, NgIf, FormsModule],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+  imports: [
+    HeaderComponent,
+    NgIf,
+    FormsModule,
+    AvatarModule,
+    FirstLetterPipe,
+    ButtonModule
+  ],
+  templateUrl: './profile.component.html'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent {
   profilePictureUrl: string = '';
   userName: string = '';
-  userEmail: string = '';
   isEditingName: boolean = false;
-  isEditingEmail: boolean = false;
 
-  ngOnInit(): void {
-    // Aquí puedes asignar valores reales a las propiedades
-    this.profilePictureUrl = 'https://thispersondoesnotexist.com/';
-    this.userName = 'Pepe Pérez';
-    this.userEmail = 'pepepe@example.com';
+  constructor(private readonly authService: AuthService) {
+    this.authService.user$.subscribe((user) => {
+      if (!user) return;
+
+      this.userName = user.username;
+    });
+  }
+
+  updateProfile(): void {
+    this.authService.updateUser({
+      username: this.userName
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  deleteAccount(): void {
+    this.authService.deleteAccount();
   }
 
   toggleEditName(): void {
-    this.isEditingName = !this.isEditingName;
-  }
+    if (this.isEditingName) {
+      this.updateProfile();
+    }
 
-  toggleEditEmail(): void {
-    this.isEditingEmail = !this.isEditingEmail;
+    this.isEditingName = !this.isEditingName;
   }
 }
