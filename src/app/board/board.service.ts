@@ -85,6 +85,58 @@ export class BoardService {
       });
   }
 
+  moveTaskToColumn(
+    boardId: number,
+    cardId: number,
+    columnId: number,
+    prevColumnId: number
+  ): void {
+    const board = this.getBoardById(boardId);
+    const prevCol = board?.project_columns.find(
+      (column) => column.id === prevColumnId
+    );
+    const task = prevCol?.tasks.find((task) => task.id === cardId);
+
+    if (!board || !task) {
+      console.log('ERROR', board, task);
+      return;
+    }
+
+    this.http
+      .patch<ProjectColumn>(
+        `${environment.apiUrl}/task/${boardId}/${cardId}`,
+        {
+          project_column_id: columnId
+        },
+        {
+          withCredentials: true
+        }
+      )
+      .subscribe(() => {
+        board.project_columns = board.project_columns.map((column) => {
+          if (column.id === prevColumnId) {
+            const newColumnTasks = column.tasks.filter(
+              (task) => task.id !== cardId
+            );
+            return {
+              ...column,
+              tasks: newColumnTasks
+            };
+          } else if (column.id === columnId) {
+            const newColumnTasks = [...column.tasks, task];
+            return {
+              ...column,
+              tasks: newColumnTasks
+            };
+          }
+
+          return column;
+        });
+
+        this.updateBoards(board);
+      });
+  }
+
   updateProjectColumn(boardId: number, column: Partial<ProjectColumn>): void {
     const board = this.getBoardById(boardId);
 
@@ -244,5 +296,9 @@ export class BoardService {
       board.id === newBoard.id ? newBoard : board
     );
     this.boardsSubject.next(this.boards);
+  }
+
+  get currentBoards(): Board[] {
+    return this.boardsSubject.getValue();
   }
 }

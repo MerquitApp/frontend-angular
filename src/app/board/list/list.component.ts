@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
-  transferArrayItem,
   DragDropModule
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
@@ -54,7 +53,21 @@ export class ListComponent {
   ) {}
 
   // Cuando se hace drag-and-drop de una tarjeta
-  drop(event: CdkDragDrop<any[]>) {
+  drop(event: CdkDragDrop<any[]>, id: number) {
+    // Look for card id attribute
+    const element = event.item.element.nativeElement.children[0];
+    const cardId = element.getAttribute('data-id');
+    const currentBoard = this.boardService.currentBoards.find((board) =>
+      board.project_columns.find((col) => col.id === id)
+    );
+    const prevCol = currentBoard?.project_columns.find((col) =>
+      col.tasks.find((task) => task.id === +cardId!)
+    );
+
+    if (!cardId || !prevCol) {
+      return;
+    }
+
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -62,12 +75,7 @@ export class ListComponent {
         event.currentIndex
       );
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      this.boardService.moveTaskToColumn(this.boardId, +cardId, id, prevCol.id);
     }
   }
 

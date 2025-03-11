@@ -50,12 +50,12 @@
     [cdkDropListData]="list.tasks"
     [id]="'list-' + list.id"
     [cdkDropListConnectedTo]="connectedListIds"
-    (cdkDropListDropped)="drop($event)"
+    (cdkDropListDropped)="drop($event, list.id)"
     class="flex flex-col space-y-2 min-h-[50px]">
     <!-- Si hay tarjetas, se muestran; si no, un placeholder para poder soltar -->
     <ng-container *ngIf="list.tasks && list.tasks.length; else emptyList">
       <div *ngFor="let card of list.tasks" cdkDrag>
-        <app-card [card]="card"></app-card>
+        <app-card [card]="card" [attr.data-id]="card.id"></app-card>
       </div>
     </ng-container>
     <ng-template #emptyList>

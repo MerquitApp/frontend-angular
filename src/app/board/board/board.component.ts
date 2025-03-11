@@ -106,7 +106,7 @@ export class BoardComponent implements OnInit {
         return;
       }
 
-      this.board = board;
+      this.board = board!;
     });
     this.boardService.updatingTask$.subscribe((card) => {
       this.isEditingTask = Boolean(card);
@@ -114,6 +114,9 @@ export class BoardComponent implements OnInit {
       if (card) {
         this.updatingTask = card;
       }
+    });
+    this.boardService.boards$.subscribe((boards) => {
+      this.board = boards.find((board) => board.id === this.board.id)!;
     });
   }
 
