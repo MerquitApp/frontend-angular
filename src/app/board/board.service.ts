@@ -60,6 +60,10 @@ export class BoardService {
           return;
         }
 
+        if (!board.project_columns) {
+          board.project_columns = [];
+        }
+
         board.project_columns.push(column);
         this.updateBoards(board);
       });
