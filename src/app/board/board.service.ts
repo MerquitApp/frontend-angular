@@ -47,7 +47,7 @@ export class BoardService {
         `${environment.apiUrl}/project-column/${boardId}`,
         {
           name: columnTitle,
-          priority: (board?.project_columns.length ?? -1) + 1
+          priority: (board?.project_columns?.length ?? -1) + 1
         },
         {
           withCredentials: true
