@@ -30,7 +30,7 @@ export class DasboardBoardCardComponent {
   onMenuShow() {
     this.menuItems = [
       {
-        label: this.board?.shareCode ? 'Copiar código' : 'Ccompartir',
+        label: this.board?.shareCode ? 'Copiar código' : 'Compartir',
         icon: 'pi pi-share-alt',
         command: () => {
           if (this.board.shareCode) {
